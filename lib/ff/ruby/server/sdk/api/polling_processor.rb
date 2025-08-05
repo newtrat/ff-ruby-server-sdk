@@ -98,6 +98,8 @@ class PollingProcessor < Closeable
           @callback.on_poller_iteration(self)
         end
 
+        @logger.warn "Polling starts: #{Time.now}"
+
         begin
 
           retrieve_flags
@@ -121,6 +123,8 @@ class PollingProcessor < Closeable
             @callback.on_poller_error(e)
           end
         end
+
+        @logger.warn "Polling ends: #{Time.now}"
 
         sleep(@poll_interval_in_sec)
       end
