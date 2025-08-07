@@ -17,7 +17,7 @@ fi
 
 . "$dir_path/sdk_specs.sh"
 
-if which openapi-generator-cli; then
+if which openapi-generator; then
 
   generated_path="$installation_path"
 
@@ -57,7 +57,7 @@ if which openapi-generator-cli; then
       gem install concurrent-ruby -v 1.1.10 && \
       gem install murmurhash3 -v 0.1.6 && \
       cd "$dir_path/.." && \
-      openapi-generator-cli generate -i api.yaml -g ruby -o "$generated_path"; then
+      openapi-generator generate -i api.yaml -g ruby -o "$generated_path"; then
 
       echo "API has been generated with success: $generated_path"
   else

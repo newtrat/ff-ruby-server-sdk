@@ -18,7 +18,6 @@
 .idea
 *.gem
 Gemfile.lock
-lib/ff/ruby/server/generated
 cache
 moneta
 
@@ -26,3 +25,5 @@ example.log
 /node_modules/
 package.json
 package-lock.json
+
+.tool-versions
