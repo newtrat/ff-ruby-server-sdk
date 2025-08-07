@@ -77,6 +77,7 @@ class MetricsProcessor < Closeable
   end
 
   def register_evaluation(target, feature_name, variation_identifier)
+    @config.logger.debug "register_evaluation: #{feature_name} #{variation_identifier}"
     register_evaluation_metric(feature_name, variation_identifier)
     if target
       register_target_metric(target)
@@ -103,6 +104,7 @@ class MetricsProcessor < Closeable
     @metric_maps_mutex.synchronize do
       key = "#{feature_name}\0#{variation_identifier}"
       @evaluation_metrics[key] = (@evaluation_metrics[key] || 0) + 1
+      @config.logger.debug "evaluation_metrics updated: #{feature_name} #{variation_identifier} -> #{@evaluation_metrics[key]}"
     end
   end
 
