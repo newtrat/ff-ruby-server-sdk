@@ -195,16 +195,21 @@ class MetricsProcessor < Closeable
 
       total_count += value
 
-      metrics_data = OpenapiClient::MetricsData.new({ :attributes => [] })
-      metrics_data.timestamp = (Time.now.to_f * 1000).to_i
-      metrics_data.count = value
-      metrics_data.metrics_type = "FFMETRICS"
-      metrics_data.attributes.push(OpenapiClient::KeyValue.new({ :key => @feature_name_attribute, :value => feature_name }))
-      metrics_data.attributes.push(OpenapiClient::KeyValue.new({ :key => @variation_identifier_attribute, :value => variation_identifier }))
-      metrics_data.attributes.push(OpenapiClient::KeyValue.new({ :key => @target_attribute, :value => @global_target_identifier }))
-      metrics_data.attributes.push(OpenapiClient::KeyValue.new({ :key => @sdk_type, :value => @server }))
-      metrics_data.attributes.push(OpenapiClient::KeyValue.new({ :key => @sdk_language, :value => "ruby" }))
-      metrics_data.attributes.push(OpenapiClient::KeyValue.new({ :key => @sdk_version, :value => @jar_version }))
+      metrics_data = OpenapiClient::MetricsData.new({
+        :attributes => [],
+        :timestamp => (Time.now.to_f * 1000).to_i,
+        :count => value,
+        :metrics_type => "FFMETRICS",
+        :attributes => [
+          OpenapiClient::KeyValue.new({ :key => @feature_name_attribute, :value => feature_name }),
+          OpenapiClient::KeyValue.new({ :key => @variation_identifier_attribute, :value => variation_identifier }),
+          OpenapiClient::KeyValue.new({ :key => @target_attribute, :value => @global_target_identifier }),
+          OpenapiClient::KeyValue.new({ :key => @sdk_type, :value => @server }),
+          OpenapiClient::KeyValue.new({ :key => @sdk_language, :value => "ruby" }),
+          OpenapiClient::KeyValue.new({ :key => @sdk_version, :value => @jar_version })
+        ]
+      })
+
       metrics.metrics_data.push(metrics_data)
     end
     @config.logger.debug "Pushed #{total_count} metric evaluations to server. metrics_data count is #{evaluation_metrics_clone.size}.  target_data count is #{target_metrics_clone.size}"
