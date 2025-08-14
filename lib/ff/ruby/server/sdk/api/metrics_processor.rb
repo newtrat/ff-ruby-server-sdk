@@ -222,28 +222,26 @@ class MetricsProcessor < Closeable
   end
 
   def add_target_data(metrics, target)
+    name = target.name
+    if name == nil || name == ""
+      name = target.identifier
+    end
 
-    target_data = OpenapiClient::TargetData.new({ :attributes => [] })
+    target_data = OpenapiClient::TargetData.new({
+      :attributes => [],
+      :identifier => target.identifier,
+      :name => name
+    })
     private_attributes = target.private_attributes
 
     attributes = target.attributes
     attributes.each do |k, v|
-      key_value = OpenapiClient::KeyValue.new
-      if !private_attributes.empty?
-        unless private_attributes.include?(k)
-          key_value = OpenapiClient::KeyValue.new({ :key => k, :value => v.to_s })
-        end
-      else
+      unless private_attributes.include?(k)
         key_value = OpenapiClient::KeyValue.new({ :key => k, :value => v.to_s })
+        target_data.attributes.push(key_value)
       end
-      target_data.attributes.push(key_value)
     end
-    target_data.identifier = target.identifier
-    if target.name == nil || target.name == ""
-      target_data.name = target.identifier
-    else
-      target_data.name = target.name
-    end
+
     metrics.target_data.push(target_data)
   end
 
