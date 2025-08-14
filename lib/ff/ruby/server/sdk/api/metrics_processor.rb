@@ -146,6 +146,8 @@ class MetricsProcessor < Closeable
             return
           end
 
+          @config.logger.debug "Attempting to send some metrics: #{Marshal.dump(evaluation_metrics_map)}"
+
           # Deep clone the evaluation metrics
           cloned_evaluations = Marshal.load(Marshal.dump(evaluation_metrics_map)).freeze
           evaluation_metrics_map.clear
@@ -159,10 +161,13 @@ class MetricsProcessor < Closeable
 
         metrics = prepare_summary_metrics_body(evaluation_metrics_map_clone, target_metrics_map_clone)
 
+        @config.logger.debug "Is metrics data empty? #{metrics.metrics_data.empty?}"
+
         unless metrics.metrics_data.empty?
           start_time = (Time.now.to_f * 1000).to_i
           @connector.post_metrics(metrics)
           end_time = (Time.now.to_f * 1000).to_i
+          @config.logger.debug "Sent metrics to server in #{end_time - start_time}ms"
           if end_time - start_time > @config.metrics_service_acceptable_duration
             @config.logger.debug "Metrics service API duration=[" + (end_time - start_time).to_s + "]"
           end
